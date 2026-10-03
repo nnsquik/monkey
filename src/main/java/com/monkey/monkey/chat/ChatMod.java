@@ -1,8 +1,7 @@
 package com.monkey.monkey.chat;
 
 import net.minecraft.event.ClickEvent;
-import net.minecraft.util.ChatStyle;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.*;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -13,14 +12,24 @@ public class ChatMod {
             return;
         }
 
-        String unformattedText = StringUtils.stripControlCodes(event.message.getFormattedText());
+        String plain = event.message.getUnformattedText();
+        if (plain.trim().isEmpty()) {
+            return;
+        }
 
-        if (!unformattedText.replace(" ", "").isEmpty()) {
-            ChatStyle style = event.message.getChatStyle();
-            if (style.getChatHoverEvent() != null) {
-                style.setChatClickEvent(new ClickEvent(
-                        ClickEvent.Action.RUN_COMMAND, "/copy " + unformattedText));
-            }
+        applyCopy(event.message, plain);
+    }
+
+    private void applyCopy(IChatComponent component, String text) {
+        ChatStyle style = component.getChatStyle();
+
+        if (style.getChatClickEvent() == null) {
+            style.setChatClickEvent(new ClickEvent(
+                    ClickEvent.Action.RUN_COMMAND, "/copy " + text));
+        }
+
+        for (Object sibling : component.getSiblings()) {
+            applyCopy((IChatComponent) sibling, text);
         }
     }
 }

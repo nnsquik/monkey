@@ -1,10 +1,10 @@
 package com.monkey.monkey.commands;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 
 public class CopyCommand extends CommandBase {
     @Override
@@ -23,13 +23,16 @@ public class CopyCommand extends CommandBase {
             return;
         }
 
-        String textToCopy = String.join(" ", args);
-        Toolkit.getDefaultToolkit().getSystemClipboard()
-                .setContents(new StringSelection(textToCopy), null);
+        GuiScreen.setClipboardString(String.join(" ", args));
     }
 
     @Override
     public int getRequiredPermissionLevel() {
         return 0;
+    }
+
+    @Override
+    public boolean canCommandSenderUseCommand(ICommandSender sender) {
+        return true;
     }
 }
