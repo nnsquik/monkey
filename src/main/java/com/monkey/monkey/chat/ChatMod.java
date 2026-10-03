@@ -16,9 +16,11 @@ public class ChatMod {
         String unformattedText = StringUtils.stripControlCodes(event.message.getFormattedText());
 
         if (!unformattedText.replace(" ", "").isEmpty()) {
-            ChatStyle chatStyle = new ChatStyle().setChatClickEvent(new ClickEvent(
-                    ClickEvent.Action.RUN_COMMAND, "/copy " + unformattedText));
-            event.message.setChatStyle(chatStyle);
+            ChatStyle style = event.message.getChatStyle();
+            if (style.getChatHoverEvent() != null) {
+                style.setChatClickEvent(new ClickEvent(
+                        ClickEvent.Action.RUN_COMMAND, "/copy " + unformattedText));
+            }
         }
     }
 }
